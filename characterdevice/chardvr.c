@@ -237,9 +237,9 @@ static int __init chrdev_init(void)
 	return 0;
 
 
-r_device:
+	r_device:
 		class_destroy(dev_class);
-r_class:
+	r_class:
 		unregister_chrdev_region(dev,1);
 		return -1;
 
