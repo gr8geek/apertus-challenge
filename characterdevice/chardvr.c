@@ -12,7 +12,7 @@
 #include <linux/kdev_t.h>
 #include <linux/device.h>
 #include <linux/slab.h>                
-#include<linux/ioctl.h>
+#include <linux/ioctl.h>
 
 #define BUF_LEN	100
 #define WR_VALUE _IOW('a','a',int32_t*)
