@@ -13,34 +13,29 @@
 #include <linux/device.h>
 #include <linux/slab.h>                
 #include <linux/ioctl.h>
-#define  BUF_LEN 100
-#define  WR_VALUE _IOW('a','a',int32_t*)
-#define  RD_VALUE _IOR('a','b',int32_t*)
+#define BUF_LEN 100
+#define WR_VALUE _IOW('a','a',int32_t*)
+#define RD_VALUE _IOR('a','b',int32_t*)
 
-static	dev_t dev = 0;
-static	int major;
-static 	char chrdev_buf[BUF_LEN];
-static 	char buf[BUF_LEN];
-static 	long  checksum = 0;
-static 	struct proc_dir_entry *ent;
-static	struct class *dev_class;
-static	struct cdev ioctl_cdev;
+static dev_t dev = 0;
+static int major;
+static char chrdev_buf[BUF_LEN];
+static char buf[BUF_LEN];
+static long  checksum = 0;
+static struct proc_dir_entry *ent;
+static struct class *dev_class;
+static struct cdev ioctl_cdev;
 
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
 
 	int i,len=0;
 	printk(KERN_ALERT "Inside proc:myread: chrdev_buf=%s",chrdev_buf);
-
-	/*
-	*The above lines calculate the length of the current string
-	*whose checksum is to be calculated 
-	*
-	*/
+	
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
-	for(i=0;i<strlen(chrdev_buf);i++){
+	for (i=0;i<strlen(chrdev_buf);i++){
 		checksum=(checksum*checksum)^chrdev_buf[i];
 	}
 
@@ -51,7 +46,6 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 
 	if (copy_to_user(ubuf,buf,len))
 		return -EFAULT;
-
 
 	printk(KERN_ALERT "The output==== %s",buf);
 	*ppos = len;
@@ -65,11 +59,9 @@ static ssize_t chrdev_read(struct file *filp,
 	printk("Inside read: %s",chrdev_buf);
 	pr_info("should read %ld bytes (*ppos=%lld)\n", count, *ppos);
 
-	/* Check for end-of-buffer */
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
-	/* Return data to the user space */
 	ret = copy_to_user(buf, chrdev_buf + *ppos, count);
 	if (ret < 0)
 		return ret;
@@ -88,14 +80,10 @@ static ssize_t chrdev_write(struct file *filp,
 	printk("Inside read: %s",chrdev_buf);
 
 	pr_info("should write %ld bytes (*ppos=%lld)\n", count, *ppos);
-	/* Check for end-of-buffer */
-
 
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
-
-	/* Get data from the user space */
 	ret = copy_from_user(chrdev_buf + *ppos, buf, count);
 	if (ret < 0)
 		return ret;
@@ -112,9 +100,7 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 
 	switch (cmd) {
 	case WR_VALUE:
-	//Simply do nothoing as checksum calculation is handelled by mywrite()
 		break;
-
 	case RD_VALUE:
 			printk(KERN_INFO"The value of arg %ld",arg);
 			printk(KERN_INFO "Checksum =%ld",checksum);
@@ -196,23 +182,17 @@ static int __init chrdev_init(void)
 		}
 
 		printk(KERN_INFO " IOCTL : Major = %d Minor = %d \n",MAJOR(dev), MINOR(dev));
-
-		/*Creating cdev structure*/
 		cdev_init(&ioctl_cdev,&fops);
-
-		/*Adding character device to the system*/
 		if ((cdev_add(&ioctl_cdev,dev,1)) < 0){
 			printk(KERN_INFO "Cannot add the device to the system\n");
 			goto r_class;
 		}
 
-		/*Creating struct class*/
 		if ((dev_class = class_create(THIS_MODULE,"ioctl_class")) == NULL){
 			printk(KERN_INFO "Cannot create the struct class\n");
 			goto r_class;
 		}
 
-		/*Creating device*/
 		if ((device_create(dev_class,NULL,dev,NULL,"ioctl_device")) == NULL){
 			printk(KERN_INFO "Cannot create the Device 1\n");
 			goto r_device;
