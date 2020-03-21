@@ -66,7 +66,6 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	return len;
 }
 
-
 static ssize_t chrdev_read(struct file *filp,
 			   char __user *buf, size_t count, loff_t *ppos)
 {
@@ -137,7 +136,6 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 	return 0;
 }
 
-
 static int chrdev_open(struct inode *inode, struct file *filp)
 {
 	pr_info("chrdev opened\n");
@@ -145,14 +143,12 @@ static int chrdev_open(struct inode *inode, struct file *filp)
 	return 0;
 }
 
-
 static int chrdev_release(struct inode *inode, struct file *filp)
 {
 	pr_info("chrdev released\n");
 
 	return 0;
 }
-
 
 static int ioctl_open(struct inode *inode, struct file *file)
 {
@@ -165,7 +161,6 @@ static int ioctl_release(struct inode *inode, struct file *file)
 		printk(KERN_INFO "Device File Closed...!!!\n");
 		return 0;
 }
-
 
 struct file_operations chrdev_fops = {
 	.owner		= 	THIS_MODULE,
@@ -183,12 +178,11 @@ struct file_operations fops =
 	.release        = ioctl_release,
 };
 
-
-
 static struct file_operations myops = {
 	.owner 		= 	THIS_MODULE,
 	.read 		= 	myread,
 };
+
 static int __init chrdev_init(void)
 {
 	//Registering the character device
@@ -251,8 +245,6 @@ r_class:
 
 }
 
-
-
 static void __exit chrdev_exit(void)
 {
 	unregister_chrdev(major, "chrdev");
@@ -264,7 +256,6 @@ static void __exit chrdev_exit(void)
 	unregister_chrdev_region(dev, 1);
 	printk(KERN_INFO "Device Driver Remove...Done!!!\n");
 }
-
 /*
  * structures for file operations
  */
