@@ -13,9 +13,9 @@
 #include <linux/device.h>
 #include <linux/slab.h>                
 #include <linux/ioctl.h>
-#define BUF_LEN	100
-#define WR_VALUE _IOW('a','a',int32_t*)
-#define RD_VALUE _IOR('a','b',int32_t*)
+#define  BUF_LEN	100
+#define  WR_VALUE _IOW('a','a',int32_t*)
+#define  RD_VALUE _IOR('a','b',int32_t*)
 
 static	dev_t 	dev = 0;
 static	int 	major;
