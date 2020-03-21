@@ -21,7 +21,7 @@ static dev_t dev = 0;
 static int major;
 static char chrdev_buf[BUF_LEN];
 static char buf[BUF_LEN];
-static long  checksum = 0;
+static long checksum = 0;
 static struct proc_dir_entry *ent;
 static struct class *dev_class;
 static struct cdev ioctl_cdev;
@@ -38,7 +38,6 @@ static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t 
 	for (i=0;i<strlen(chrdev_buf);i++){
 		checksum=(checksum*checksum)^chrdev_buf[i];
 	}
-
 
 	printk(KERN_ALERT "The i=%d",i);
 	len += sprintf(buf,"checksum = %ld\n",checksum);	
