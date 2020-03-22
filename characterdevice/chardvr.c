@@ -63,7 +63,6 @@ static ssize_t chrdev_read(struct file *filp,
 		return ret;
 
 	*ppos += count;
-	pr_info("return %ld bytes *ppos=%lld \n", count, *ppos);
 	return count;
 }
 
@@ -71,9 +70,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 {
 
 	int ret;
-	printk(KERN_INFO "Inside read: %s", chrdev_buf);
-	printk(KERN_INFO "should write %ld bytes *ppos=%lld \n", count, *ppos);
-
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
@@ -104,13 +100,11 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 
 static int chrdev_open(struct inode *inode, struct file *filp)
 {
-	pr_info("chrdev opened\n");
 	return 0;
 }
 
 static int chrdev_release(struct inode *inode, struct file *filp)
 {
-	pr_info("chrdev released\n");
 	return 0;
 }
 
