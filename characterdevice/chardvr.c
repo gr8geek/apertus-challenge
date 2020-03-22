@@ -52,8 +52,8 @@ static ssize_t chrdev_read(struct file *filp,
 	char __user *buf, size_t count, loff_t *ppos)
 {
 	int ret;
-	printk("Inside read: %s", chrdev_buf);
-	pr_info("should read %ld bytes (*ppos=%lld)\n", count, *ppos);
+	printk(KERN_INFO "Inside read: %s", chrdev_buf);
+	printk(KERN_INFO "should read %ld bytes *ppos=%lld\n", count, *ppos);
 
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
@@ -63,7 +63,7 @@ static ssize_t chrdev_read(struct file *filp,
 		return ret;
 
 	*ppos += count;
-	pr_info("return %ld bytes (*ppos=%lld)\n", count, *ppos);
+	pr_info("return %ld bytes *ppos=%lld \n", count, *ppos);
 	return count;
 }
 
@@ -71,8 +71,8 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 {
 
 	int ret;
-	printk("Inside read: %s", chrdev_buf);
-	pr_info("should write %ld bytes (*ppos=%lld)\n", count, *ppos);
+	printk(KERN_INFO "Inside read: %s", chrdev_buf);
+	printk(KERN_INFO "should write %ld bytes *ppos=%lld \n", count, *ppos);
 
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
@@ -82,7 +82,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 		return ret;
 	
 	*ppos += count;
-	pr_info("got %ld bytes (*ppos=%lld)\n", count, *ppos);
 	return count;
 }
 
@@ -117,13 +116,11 @@ static int chrdev_release(struct inode *inode, struct file *filp)
 
 static int ioctl_open(struct inode *inode, struct file *file)
 {
-	printk(KERN_INFO "Device File Opened...!!!\n");
 	return 0;
 }
 
 static int ioctl_release(struct inode *inode, struct file *file)
 {
-	printk(KERN_INFO "Device File Closed...!!!\n");
 	return 0;
 }
 
@@ -153,7 +150,6 @@ static int __init chrdev_init(void)
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
 
 	if (ret < 0) {
-		pr_err("unable to register char device! Error %d\n", ret);
 		return ret;
 	}
 	major = ret;
