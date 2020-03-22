@@ -54,9 +54,7 @@ static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t count,
 			   loff_t *ppos)
 {
 	int ret;
-	printk("Inside read: %s", chrdev_buf);
-	pr_info("should read %ld bytes (*ppos=%lld)\n", count, *ppos);
-
+	printk(KERN_ALERT "Inside read: %s", chrdev_buf);
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
@@ -65,8 +63,6 @@ static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t count,
 		return ret;
 
 	*ppos += count;
-	pr_info("return %ld bytes (*ppos=%lld)\n", count, *ppos);
-
 	return count;
 }
 
@@ -75,9 +71,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf,
 {
 	int ret;
 	printk("Inside read: %s", chrdev_buf);
-
-	pr_info("should write %ld bytes (*ppos=%lld)\n", count, *ppos);
-
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
@@ -86,8 +79,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf,
 		return ret;
 
 	*ppos += count;
-	pr_info("got %ld bytes (*ppos=%lld)\n", count, *ppos);
-
 	return count;
 }
 
