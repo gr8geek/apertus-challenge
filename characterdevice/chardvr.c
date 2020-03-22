@@ -38,12 +38,11 @@ static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 
 	for (i = 0; i < strlen(chrdev_buf); i++)
 		checksum = (checksum * checksum) ^ chrdev_buf[i];
+	
 	len += sprintf(buf, "checksum = %ld\n", checksum);
 
 	if (copy_to_user(ubuf, buf, len))
 		return -EFAULT;
-
-	printk(KERN_ALERT "The output==== %s", buf);
 	*ppos = len;
 	return len;
 }
@@ -52,8 +51,6 @@ static ssize_t chrdev_read(struct file *filp,
 	char __user *buf, size_t count, loff_t *ppos)
 {
 	int ret;
-	printk(KERN_INFO "Inside read: %s", chrdev_buf);
-	printk(KERN_INFO "should read %ld bytes *ppos=%lld\n", count, *ppos);
 
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
@@ -163,6 +160,8 @@ static int __init chrdev_init(void)
 		printk(KERN_INFO "Cannot add the device to the system\n");
 		goto r_class;
 	}
+	
+	
 	if ((dev_class = class_create(THIS_MODULE, "ioctl_class")) == NULL) {
 		printk(KERN_INFO "Cannot create the struct class\n");
 		goto r_class;
