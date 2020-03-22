@@ -89,7 +89,7 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 	switch (cmd) {
 	case WR_VALUE:
 		//clear the character buffer
-		for (i = 0;i < 100;i++) 
+		for (i = 0; i < BUF_LEN ; i++)
 			chrdev_buf[i] = 0;
 		break;
 	case RD_VALUE:
