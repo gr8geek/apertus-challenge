@@ -36,10 +36,10 @@ static ssize_t myread(struct file *file, char __user *ubuf, size_t count, loff_t
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
-	for (i = 0; i < strlen(chrdev_buf); i++)
-	{
+	for (i = 0; i < strlen(chrdev_buf); i++){
 		checksum = (checksum *checksum) ^ chrdev_buf[i];
 	}
+	
 
 	printk(KERN_ALERT "The i=%d", i);
 	len += sprintf(buf, "checksum = %ld\n", checksum);
@@ -101,12 +101,9 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 	{
 		case WR_VALUE:
 			//clear the character buffer
-			for (i = 0;i < 100;i++)
-			{
+			for (i = 0;i < 100;i++){
 				chrdev_buf[i]=0;
-
 			}
-
 			break;
 		case RD_VALUE:
 			printk(KERN_INFO "The value of arg %ld", arg);
@@ -124,14 +121,12 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 static int chrdev_open(struct inode *inode, struct file *filp)
 {
 	pr_info("chrdev opened\n");
-
 	return 0;
 }
 
 static int chrdev_release(struct inode *inode, struct file *filp)
 {
 	pr_info("chrdev released\n");
-
 	return 0;
 }
 
@@ -154,13 +149,15 @@ struct file_operations chrdev_fops = { .owner = THIS_MODULE,
 	.release = chrdev_release
 };
 
-struct file_operations fops = { .owner = THIS_MODULE,
+struct file_operations fops = { 
+	.owner = THIS_MODULE,
 	.open = ioctl_open,
 	.unlocked_ioctl = ioctl_ioctl,
 	.release = ioctl_release,
 };
 
-static struct file_operations myops = { .owner = THIS_MODULE,
+static struct file_operations myops = { 
+	.owner = THIS_MODULE,
 	.read = myread,
 };
 
@@ -169,8 +166,7 @@ static int __init chrdev_init(void)
 	int ret;
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
 
-	if (ret < 0)
-	{
+	if (ret < 0){
 		pr_err("unable to register char device! Error %d\n", ret);
 		return ret;
 	}
@@ -180,28 +176,23 @@ static int __init chrdev_init(void)
 	printk(KERN_ALERT "inside kernel space :)\n");
 
 	//allocating for the IOCTL
-	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0)
-	{
+	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0){
 		printk(KERN_INFO "Cannot allocate major number\n");
 		return -1;
 	}
 
 	printk(KERN_INFO " IOCTL : Major = %d Minor = %d \n", MAJOR(dev), MINOR(dev));
 	cdev_init(&ioctl_cdev, &fops);
-	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0)
-	{
+	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0){
 		printk(KERN_INFO "Cannot add the device to the system\n");
 		goto r_class;
 	}
-
-	if ((dev_class = class_create(THIS_MODULE, "ioctl_class")) == NULL)
-	{
+	if ((dev_class = class_create(THIS_MODULE, "ioctl_class")) == NULL){
 		printk(KERN_INFO "Cannot create the struct class\n");
 		goto r_class;
 	}
 
-	if ((device_create(dev_class, NULL, dev, NULL, "ioctl_device")) == NULL)
-	{
+	if ((device_create(dev_class, NULL, dev, NULL, "ioctl_device")) == NULL){
 		printk(KERN_INFO "Cannot create the Device 1\n");
 		goto r_device;
 	}
@@ -209,10 +200,10 @@ static int __init chrdev_init(void)
 	printk(KERN_INFO "Device Driver Insert...Done!!!\n");
 	return 0;
 
-	r_device:
-		class_destroy(dev_class);
-	r_class:
-		unregister_chrdev_region(dev, 1);
+r_device:
+	class_destroy(dev_class);
+r_class:
+	unregister_chrdev_region(dev, 1);
 	return -1;
 
 }
