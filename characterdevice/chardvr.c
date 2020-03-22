@@ -13,28 +13,28 @@
 #include <linux/slab.h>
 #include <linux/ioctl.h>
 
-#define  BUF_LEN 	100
-#define  WR_VALUE 	_IOW('a', 'a', int32_t *)
-#define  RD_VALUE 	_IOR('a', 'b', int32_t *)
+#define  BUF_LEN    100
+#define  WR_VALUE   _IOW('a', 'a', int32_t *)
+#define  RD_VALUE   _IOR('a', 'b', int32_t *)
 
-static   dev_t 		dev = 0;
-static   int 		major;
-static   char 		chrdev_buf[BUF_LEN];
-static   char 		buf[BUF_LEN];
-static   long 	      	checksum = 0;
-static   struct 	proc_dir_entry * ent;
-static   struct 	class * dev_class;
-static   struct 	cdev ioctl_cdev;
+static   dev_t 	    dev = 0;
+static   int 	    major;
+static   char       chrdev_buf[BUF_LEN];
+static   char 	    buf[BUF_LEN];
+static   long 	    checksum = 0;
+static   struct     proc_dir_entry * ent;
+static   struct     class * dev_class;
+static   struct     cdev ioctl_cdev;
 
 static ssize_t myread(struct file *file, char __user *ubuf, size_t count, 
 		      loff_t *ppos)
 {
 	int i, len;
-	len        = 0;
-	checksum   = 0;
+	len = 0;
 
 	printk(KERN_ALERT "Inside proc:myread: chrdev_buf=%s", chrdev_buf);
-
+	checksum = 0;
+	
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
