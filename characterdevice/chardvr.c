@@ -30,9 +30,7 @@ static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 		      loff_t *ppos)
 {
 	int i, len;
-	len = 0;
-
-	printk(KERN_ALERT "Inside proc:myread: chrdev_buf=%s", chrdev_buf);
+	len      = 0;
 	checksum = 0;
 	
 	if (*ppos > 0 || count < BUF_LEN)
@@ -40,8 +38,6 @@ static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 
 	for (i = 0; i < strlen(chrdev_buf); i++)
 		checksum = (checksum * checksum) ^ chrdev_buf[i];
-	
-	printk(KERN_ALERT "The i=%d", i);
 	len += sprintf(buf, "checksum = %ld\n", checksum);
 
 	if (copy_to_user(ubuf, buf, len))
@@ -93,22 +89,16 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 {
 	int i;
-	switch (cmd)
-	{
-		case WR_VALUE:
-			//clear the character buffer
-			for (i = 0;i < 100;i++)
-				chrdev_buf[i]=0;
-			break;
-		case RD_VALUE:
-			printk(KERN_INFO "The value of arg %ld", arg);
-			printk(KERN_INFO "Checksum = %ld", checksum);
-			printk(KERN_INFO "The value of buffer %s", chrdev_buf);
-			copy_to_user((long*) arg, &checksum, sizeof(checksum));
-			arg = checksum;
-			printk(KERN_INFO "The value copied = %ld", arg);
-			printk(KERN_INFO "The checksum %ld", checksum);
-			break;
+	switch (cmd){
+	case WR_VALUE:
+		//clear the character buffer
+		for (i = 0;i < 100;i++)
+			chrdev_buf[i]=0;
+		break;
+	case RD_VALUE:
+		copy_to_user((long*) arg, &checksum, sizeof(checksum));
+		arg = checksum;
+		break;
 	}
 	return 0;
 }
