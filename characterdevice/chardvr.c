@@ -89,7 +89,7 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 {
 	int i;
-	switch (cmd){
+	switch (cmd) {
 	case WR_VALUE:
 		//clear the character buffer
 		for (i = 0;i < 100;i++)
