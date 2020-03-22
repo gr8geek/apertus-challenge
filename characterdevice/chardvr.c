@@ -26,8 +26,8 @@ static   struct     proc_dir_entry * ent;
 static   struct     class * dev_class;
 static   struct     cdev ioctl_cdev;
 
-static ssize_t myread(struct file *file, char __user *ubuf, size_t count, 
-		      loff_t *ppos)
+static ssize_t myread(struct file *file, char __user *ubuf,
+		      size_t count, loff_t *ppos)
 {
 	int i, len;
 	len      = 0;
@@ -156,13 +156,11 @@ static int __init chrdev_init(void)
 
 	//allocating for the IOCTL
 	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0) {
-		printk(KERN_INFO "Cannot allocate major number\n");
 		return -1;
 	}
 
 	cdev_init(&ioctl_cdev, &fops);
 	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0) {
-		printk(KERN_INFO "Cannot add the device to the system\n");
 		goto r_class;
 	}
 	
