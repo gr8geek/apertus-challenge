@@ -20,9 +20,10 @@ static int major;
 static char chrdev_buf[BUF_LEN];
 static char buf[BUF_LEN];
 static long checksum = 0;
+
 static struct proc_dir_entry *ent;
-static struct class *dev_class;
-static struct cdev ioctl_cdev;
+static struct class          *dev_class;
+static struct cdev           ioctl_cdev;
 
 static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 		      loff_t *ppos)
@@ -139,22 +140,22 @@ static int ioctl_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-struct file_operations chrdev_fops = { .owner = THIS_MODULE,
-				       .read = chrdev_read,
-				       .write = chrdev_write,
-				       .open = chrdev_open,
+struct file_operations chrdev_fops = { .owner   = THIS_MODULE,
+				       .read    = chrdev_read,
+				       .write   = chrdev_write,
+				       .open    = chrdev_open,
 				       .release = chrdev_release };
 
 struct file_operations fops = {
-	.owner = THIS_MODULE,
-	.open = ioctl_open,
+	.owner          = THIS_MODULE,
+	.open           = ioctl_open,
 	.unlocked_ioctl = ioctl_ioctl,
-	.release = ioctl_release,
+	.release        = ioctl_release,
 };
 
 static struct file_operations myops = {
 	.owner = THIS_MODULE,
-	.read = myread,
+	.read  = myread,
 };
 
 static int __init chrdev_init(void)
