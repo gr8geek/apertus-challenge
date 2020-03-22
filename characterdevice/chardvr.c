@@ -63,7 +63,8 @@ static ssize_t chrdev_read(struct file *filp,
 	return count;
 }
 
-static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t count, loff_t *ppos)
+static ssize_t chrdev_write(struct file *filp, const char __user *buf, 
+			    size_t count, loff_t *ppos)
 {
 
 	int ret;
@@ -78,7 +79,8 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 	return count;
 }
 
-static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
+static long ioctl_ioctl(struct file *file, int unsigned cmd, 
+			unsigned long arg)
 {
 	int i;
 	switch (cmd) {
@@ -95,22 +97,26 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 	return 0;
 }
 
-static int chrdev_open(struct inode *inode, struct file *filp)
+static int chrdev_open(struct inode *inode, 
+		       struct file *filp)
 {
 	return 0;
 }
 
-static int chrdev_release(struct inode *inode, struct file *filp)
+static int chrdev_release(struct inode *inode, 
+			  struct file *filp)
 {
 	return 0;
 }
 
-static int ioctl_open(struct inode *inode, struct file *file)
+static int ioctl_open(struct inode *inode, 
+		      struct file *file)
 {
 	return 0;
 }
 
-static int ioctl_release(struct inode *inode, struct file *file)
+static int ioctl_release(struct inode *inode, 
+			 struct file *file)
 {
 	return 0;
 }
@@ -154,7 +160,6 @@ static int __init chrdev_init(void)
 		return -1;
 	}
 
-	printk(KERN_INFO " IOCTL : Major = %d Minor = %d \n", MAJOR(dev), MINOR(dev));
 	cdev_init(&ioctl_cdev, &fops);
 	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0) {
 		printk(KERN_INFO "Cannot add the device to the system\n");
