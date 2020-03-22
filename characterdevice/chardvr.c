@@ -16,10 +16,10 @@
 #define RD_VALUE _IOR('a', 'b', int32_t *)
 
 static dev_t dev = 0;
-static int major;
-static char chrdev_buf[BUF_LEN];
-static char buf[BUF_LEN];
-static long checksum = 0;
+static int   major;
+static char  chrdev_buf[BUF_LEN];
+static char  buf[BUF_LEN];
+static long  checksum = 0;
 
 static struct proc_dir_entry *ent;
 static struct class          *dev_class;
