@@ -38,11 +38,9 @@ static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
-	for (i = 0; i < strlen(chrdev_buf); i++){
+	for (i = 0; i < strlen(chrdev_buf); i++)
 		checksum = (checksum * checksum) ^ chrdev_buf[i];
-	}
 	
-
 	printk(KERN_ALERT "The i=%d", i);
 	len += sprintf(buf, "checksum = %ld\n", checksum);
 
@@ -70,7 +68,6 @@ static ssize_t chrdev_read(struct file *filp,
 
 	*ppos += count;
 	pr_info("return %ld bytes (*ppos=%lld)\n", count, *ppos);
-
 	return count;
 }
 
@@ -79,7 +76,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 
 	int ret;
 	printk("Inside read: %s", chrdev_buf);
-
 	pr_info("should write %ld bytes (*ppos=%lld)\n", count, *ppos);
 
 	if (*ppos + count >= BUF_LEN)
@@ -103,9 +99,8 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 	{
 		case WR_VALUE:
 			//clear the character buffer
-			for (i = 0;i < 100;i++){
+			for (i = 0;i < 100;i++)
 				chrdev_buf[i]=0;
-			}
 			break;
 		case RD_VALUE:
 			printk(KERN_INFO "The value of arg %ld", arg);
