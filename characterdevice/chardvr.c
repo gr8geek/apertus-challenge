@@ -145,7 +145,6 @@ static int __init chrdev_init(void)
 {
 	int ret;
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
-
 	if (ret < 0) {
 		return ret;
 	}
@@ -153,8 +152,6 @@ static int __init chrdev_init(void)
 	pr_info("got major %d\n", major);
 	ent = proc_create("apertus", 0777, NULL, &myops);
 	printk(KERN_ALERT "inside kernel space :)\n");
-
-	//allocating for the IOCTL
 	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0) {
 		return -1;
 	}
@@ -170,7 +167,8 @@ static int __init chrdev_init(void)
 		goto r_class;
 	}
 
-	if ((device_create(dev_class, NULL, dev, NULL, "ioctl_device")) == NULL) {
+	if ((device_create(dev_class, NULL, dev, NULL, 
+			   "ioctl_device")) == NULL) {
 		printk(KERN_INFO "Cannot create the Device 1\n");
 		goto r_device;
 	}
