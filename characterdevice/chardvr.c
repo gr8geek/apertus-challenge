@@ -26,10 +26,12 @@ static   struct 	proc_dir_entry * ent;
 static   struct 	class * dev_class;
 static   struct 	cdev ioctl_cdev;
 
-static ssize_t myread(struct file *file, char __user *ubuf, size_t count, loff_t *ppos)
+static ssize_t myread(struct file *file, char __user *ubuf, size_t count, 
+		      loff_t *ppos)
 {
-	int i, len = 0;
-	checksum = 0;
+	int i, len;
+	len        = 0;
+	checksum   = 0;
 
 	printk(KERN_ALERT "Inside proc:myread: chrdev_buf=%s", chrdev_buf);
 
