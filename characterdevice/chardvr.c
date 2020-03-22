@@ -84,17 +84,15 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t co
 	ret = copy_from_user(chrdev_buf + *ppos, buf, count);
 	if (ret < 0)
 		return ret;
-
+	
 	*ppos += count;
 	pr_info("got %ld bytes (*ppos=%lld)\n", count, *ppos);
-
 	return count;
 }
 
 static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 {
 	int i;
-
 	switch (cmd)
 	{
 		case WR_VALUE:
@@ -104,11 +102,11 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 			break;
 		case RD_VALUE:
 			printk(KERN_INFO "The value of arg %ld", arg);
-			printk(KERN_INFO "Checksum =%ld", checksum);
+			printk(KERN_INFO "Checksum = %ld", checksum);
 			printk(KERN_INFO "The value of buffer %s", chrdev_buf);
 			copy_to_user((long*) arg, &checksum, sizeof(checksum));
 			arg = checksum;
-			printk(KERN_INFO "The value copied=%ld", arg);
+			printk(KERN_INFO "The value copied = %ld", arg);
 			printk(KERN_INFO "The checksum %ld", checksum);
 			break;
 	}
@@ -164,7 +162,7 @@ static int __init chrdev_init(void)
 	int ret;
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
 
-	if (ret < 0){
+	if (ret < 0) {
 		pr_err("unable to register char device! Error %d\n", ret);
 		return ret;
 	}
@@ -174,23 +172,23 @@ static int __init chrdev_init(void)
 	printk(KERN_ALERT "inside kernel space :)\n");
 
 	//allocating for the IOCTL
-	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0){
+	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0) {
 		printk(KERN_INFO "Cannot allocate major number\n");
 		return -1;
 	}
 
 	printk(KERN_INFO " IOCTL : Major = %d Minor = %d \n", MAJOR(dev), MINOR(dev));
 	cdev_init(&ioctl_cdev, &fops);
-	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0){
+	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0) {
 		printk(KERN_INFO "Cannot add the device to the system\n");
 		goto r_class;
 	}
-	if ((dev_class = class_create(THIS_MODULE, "ioctl_class")) == NULL){
+	if ((dev_class = class_create(THIS_MODULE, "ioctl_class")) == NULL) {
 		printk(KERN_INFO "Cannot create the struct class\n");
 		goto r_class;
 	}
 
-	if ((device_create(dev_class, NULL, dev, NULL, "ioctl_device")) == NULL){
+	if ((device_create(dev_class, NULL, dev, NULL, "ioctl_device")) == NULL) {
 		printk(KERN_INFO "Cannot create the Device 1\n");
 		goto r_device;
 	}
