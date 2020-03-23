@@ -15,20 +15,21 @@
 #define WR_VALUE _IOW('a', 'a', int32_t *)
 #define RD_VALUE _IOR('a', 'b', int32_t *)
 
-static  int			 major;
-static  char			 chrdev_buf[BUF_LEN];
-static  char			 buf[BUF_LEN];
-static  long                     checksum;
-static  dev_t			 dev;
-static  struct  proc_dir_entry   *ent;
-static  struct  class		 *dev_class;
-static  struct  cdev		 ioctl_cdev;
+static  int   major;
+static  char  chrdev_buf[BUF_LEN];
+static  char  buf[BUF_LEN];
+static  long  checksum;
+static  dev_t dev;
+static  struct proc_dir_entry *ent;
+static  struct class	      *dev_class;
+static  struct cdev	      ioctl_cdev;
 
 static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 		      loff_t *ppos)
 {
-	int i, len = 0;
+	int i, len;	
 	checksum = 0;
+	len	 = 0;
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
