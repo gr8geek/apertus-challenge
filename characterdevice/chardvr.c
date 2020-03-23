@@ -26,21 +26,16 @@ static  struct cdev	      ioctl_cdev;
 static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 		      loff_t *ppos)
 {
-	int i, len;	
-	checksum = 0;
-	len	 = 0;
+	int i, len = 0;
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
-
+	checksum = 0;
 	for (i = 0; i < strlen(chrdev_buf); i++)
 		checksum = (checksum * checksum) ^ chrdev_buf[i];
-
 	printk(KERN_ALERT "The i=%d", i);
 	len += sprintf(buf, "checksum = %ld\n", checksum);
-
 	if (copy_to_user(ubuf, buf, len))
 		return -EFAULT;
-
 	*ppos = len;
 	return len;
 }
@@ -49,15 +44,12 @@ static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t count,
 			   loff_t *ppos)
 {
 	int ret;
-	printk(KERN_ALERT "Inside read: %s", chrdev_buf);
-	
+	printk(KERN_ALERT "Inside read: %s", chrdev_buf);	
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
-
 	ret = copy_to_user(buf, chrdev_buf + *ppos, count);
 	if (ret < 0)
 		return ret;
-
 	*ppos += count;
 	return count;
 }
@@ -69,11 +61,9 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf,
 	printk("Inside read: %s", chrdev_buf);
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
-
 	ret = copy_from_user(chrdev_buf + *ppos, buf, count);
 	if (ret < 0)
 		return ret;
-
 	*ppos += count;
 	return count;
 }
@@ -81,7 +71,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf,
 static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 {
 	int i;
-
 	switch (cmd) {
 	case WR_VALUE:
 		for (i = 0; i < BUF_LEN ; i++)
@@ -157,14 +146,11 @@ static int __init chrdev_init(void)
 	printk(KERN_INFO "got major %d\n", major);
 	ent = proc_create("apertus", 0777, NULL, &myops);
 	printk(KERN_ALERT "inside kernel space :)\n");
-
 	dev = 0;
 	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0) {
 		printk(KERN_INFO "Cannot allocate major number\n");
 		return -1;
-	}
-
-	
+	}	
 	cdev_init(&ioctl_cdev, &fops);
 	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0) {
 		printk(KERN_INFO "Cannot add the device to the system\n");
@@ -183,7 +169,6 @@ static int __init chrdev_init(void)
 
 	printk(KERN_INFO "Device Driver Insert...Done!!!\n");
 	return 0;
-
 r_device:
 	class_destroy(dev_class);
 r_class:
