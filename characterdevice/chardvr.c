@@ -15,11 +15,11 @@
 #define WR_VALUE _IOW('a', 'a', int32_t *)
 #define RD_VALUE _IOR('a', 'b', int32_t *)
 
-static  int   major;
-static  char  chrdev_buf[BUF_LEN];
-static  char  buf[BUF_LEN];
-static  long  checksum;
-static  dev_t dev;
+static  int    major;
+static  char   chrdev_buf[BUF_LEN];
+static  char   buf[BUF_LEN];
+static  long   checksum;
+static  dev_t  dev;
 static  struct proc_dir_entry *ent;
 static  struct class	      *dev_class;
 static  struct cdev	      ioctl_cdev;
