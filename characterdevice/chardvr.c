@@ -68,7 +68,8 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf,
 	return count;
 }
 
-static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
+static long ioctl_ioc(struct file *file, int unsigned cmd,
+			unsigned long arg)
 {
 	int i;
 	switch (cmd) {
@@ -77,13 +78,8 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 			chrdev_buf[i] = 0;
 		break;
 	case RD_VALUE:
-		printk(KERN_INFO "The value of arg %ld", arg);
-		printk(KERN_INFO "Checksum =%ld", checksum);
-		printk(KERN_INFO "The value of buffer %s", chrdev_buf);
 		copy_to_user((long *)arg, &checksum, sizeof(checksum));
 		arg = checksum;
-		printk(KERN_INFO "The value copied=%ld", arg);
-		printk(KERN_INFO "The checksum %ld", checksum);
 		break;
 	}
 	return 0;
@@ -124,7 +120,7 @@ struct file_operations chrdev_fops = {
 struct file_operations fops = {
 	.owner          = THIS_MODULE,
 	.open           = ioctl_open,
-	.unlocked_ioctl = ioctl_ioctl,
+	.unlocked_ioctl = ioctl_ioc,
 	.release        = ioctl_release,
 };
 
@@ -139,7 +135,6 @@ static int __init chrdev_init(void)
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
 
 	if (ret < 0) {
-		printk(KERN_INFO "unable to register char device! Error %d\n", ret);
 		return ret;
 	}
 	major = ret;
