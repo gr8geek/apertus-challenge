@@ -15,24 +15,20 @@
 #define WR_VALUE _IOW('a', 'a', int32_t *)
 #define RD_VALUE _IOR('a', 'b', int32_t *)
 
-static dev_t     dev = 0;
-static int       major;
-static char      chrdev_buf[BUF_LEN];
-static char      buf[BUF_LEN];
-static long      checksum = 0;
-
-static struct proc_dir_entry *ent;
-static struct class          *dev_class;
-static struct cdev           ioctl_cdev;
+static  int                      major;
+static  char                     chrdev_buf[BUF_LEN];
+static  char                     buf[BUF_LEN];
+static  long                     checksum;
+static  dev_t                    dev;
+static  struct  proc_dir_entry   *ent;
+static  struct  class            *dev_class;
+static  struct  cdev             ioctl_cdev;
 
 static ssize_t myread(struct file *file, char __user *ubuf, size_t count,
 		      loff_t *ppos)
 {
 	int i, len = 0;
 	checksum = 0;
-
-	printk(KERN_ALERT "Inside proc:myread: chrdev_buf=%s", chrdev_buf);
-
 	if (*ppos > 0 || count < BUF_LEN)
 		return 0;
 
@@ -55,6 +51,7 @@ static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t count,
 {
 	int ret;
 	printk(KERN_ALERT "Inside read: %s", chrdev_buf);
+	
 	if (*ppos + count >= BUF_LEN)
 		count = BUF_LEN - *ppos;
 
@@ -106,13 +103,11 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 
 static int chrdev_open(struct inode *inode, struct file *filp)
 {
-	pr_info("chrdev opened\n");
 	return 0;
 }
 
 static int chrdev_release(struct inode *inode, struct file *filp)
 {
-	pr_info("chrdev released\n");
 	return 0;
 }
 
@@ -152,15 +147,15 @@ static int __init chrdev_init(void)
 	ret = register_chrdev(0, "chrdev", &chrdev_fops);
 
 	if (ret < 0) {
-		pr_err("unable to register char device! Error %d\n", ret);
+		printk(KERN_INFO "unable to register char device! Error %d\n", ret);
 		return ret;
 	}
 	major = ret;
-	pr_info("got major %d\n", major);
+	printk(KERN_INFO "got major %d\n", major);
 	ent = proc_create("apertus", 0777, NULL, &myops);
 	printk(KERN_ALERT "inside kernel space :)\n");
 
-	//allocating for the IOCTL
+	dev = 0;
 	if ((alloc_chrdev_region(&dev, 0, 1, "ioctl_Dev")) < 0) {
 		printk(KERN_INFO "Cannot allocate major number\n");
 		return -1;
