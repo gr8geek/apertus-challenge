@@ -102,31 +102,35 @@ static long ioctl_ioctl(struct file *file, int unsigned cmd, unsigned long arg)
 
 static int chrdev_open(struct inode *inode, struct file *filp)
 {
+	printk(KERN_INFO "Inside the chrdev_open\n");
 	return 0;
 }
 
 static int chrdev_release(struct inode *inode, struct file *filp)
 {
+	printk(KERN_INFO "Inside the chrdev_release\n");
 	return 0;
 }
 
 static int ioctl_open(struct inode *inode, struct file *file)
 {
-	printk(KERN_INFO "Device File Opened...!!!\n");
+	printk(KERN_INFO "Device File Opened\n");
 	return 0;
 }
 
 static int ioctl_release(struct inode *inode, struct file *file)
 {
-	printk(KERN_INFO "Device File Closed...!!!\n");
+	printk(KERN_INFO "Device File Closed\n");
 	return 0;
 }
 
-struct file_operations chrdev_fops = { .owner   = THIS_MODULE,
-				       .read    = chrdev_read,
-				       .write   = chrdev_write,
-				       .open    = chrdev_open,
-				       .release = chrdev_release };
+struct file_operations chrdev_fops = { 
+	.owner   = THIS_MODULE,
+	.read    = chrdev_read,
+	.write   = chrdev_write,
+	.open    = chrdev_open,
+	.release = chrdev_release
+};
 
 struct file_operations fops = {
 	.owner          = THIS_MODULE,
@@ -160,8 +164,7 @@ static int __init chrdev_init(void)
 		return -1;
 	}
 
-	printk(KERN_INFO " IOCTL : Major = %d Minor = %d \n", MAJOR(dev),
-	       MINOR(dev));
+	
 	cdev_init(&ioctl_cdev, &fops);
 	if ((cdev_add(&ioctl_cdev, dev, 1)) < 0) {
 		printk(KERN_INFO "Cannot add the device to the system\n");
